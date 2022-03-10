@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "xxxxxxxxxxxx",          
+      "project_id": "flashchat-flutter-xxxxx",
+      "storage_bucket": "flashchat-flutter-xxxxx.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:xxxxxxxxxxxx:android:xxxxxxxxxxxxxxxxxxxxxx",
+          "android_client_info": {
+            "package_name": "com.xxxxxxxxxxxxxxxxxxxxxx.flash_chat_app"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "xxxxxxxxxxxx-xxxxxxxxxxxx.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "xxxxxxxxxxxx"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "xxxxxxxxxxxx-xxxxxxxxxxxx.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
