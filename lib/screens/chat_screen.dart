@@ -38,22 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
-  // void getMessages() async {
-  //   final messages = await _firestore.collection('messages').get();
-  //   for (var message in messages.docs) {
-  //     print(message.data());
-  //   }
-  // }
-  void messagesStream() async {
-    // Listens for Stream of Message which listens for new changes
-    // Its similar to List Future as the data comes one by one
-    await for (var snapshot in _firestore.collection('messages').snapshots()) {
-      for (var message in snapshot.docs) {
-        print(message.data());
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +47,8 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: const Icon(Icons.close),
               onPressed: () {
-                messagesStream();
-                // _auth.signOut();
-                // Navigator.pop(context);
+                _auth.signOut();
+                Navigator.pop(context);
               }),
         ],
         title: const Text('⚡️Chat'),
@@ -130,18 +113,24 @@ class MessageStreamBuilder extends StatelessWidget {
           );
         }
 
-        final messages = snapshot.data?.docs;
+        final messages = snapshot.data?.docs.reversed;
         List<MessageBubble> messageBubbles = [];
         for (var message in messages!) {
           final messageText = message.get('text');
           final messageSender = message.get('sender');
-          final messageWidget =
-              MessageBubble(sender: messageSender, text: messageText);
+          final currentUser = loggedInUser?.email;
+
+          final messageWidget = MessageBubble(
+            sender: messageSender,
+            text: messageText,
+            isMe: currentUser == messageSender,
+          );
           messageBubbles.add(messageWidget);
         }
 
         return Expanded(
           child: ListView(
+              reverse: true,
               padding: const EdgeInsets.symmetric(
                 horizontal: 10.0,
                 vertical: 20.0,
@@ -156,7 +145,9 @@ class MessageStreamBuilder extends StatelessWidget {
 class MessageBubble extends StatelessWidget {
   final String sender;
   final String text;
-  const MessageBubble({Key? key, required this.sender, required this.text})
+  final bool isMe;
+  const MessageBubble(
+      {Key? key, required this.sender, required this.text, required this.isMe})
       : super(key: key);
 
   @override
@@ -164,7 +155,9 @@ class MessageBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        // TODO : doing the following automatically makes the chats divide in left and right
+        crossAxisAlignment:
+            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           Text(
             sender,
@@ -174,12 +167,18 @@ class MessageBubble extends StatelessWidget {
             ),
           ),
           Material(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(30.0),
-              bottomLeft: Radius.circular(30.0),
-              bottomRight: Radius.circular(30.0),
-            ),
-            color: Colors.lightBlueAccent,
+            borderRadius: isMe
+                ? const BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  )
+                : const BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    bottomLeft: Radius.circular(30.0),
+                    bottomRight: Radius.circular(30.0),
+                  ),
+            color: isMe ? Colors.lightBlueAccent : Colors.white,
             elevation: 5.0,
             child: Padding(
               padding: const EdgeInsets.symmetric(
@@ -188,9 +187,9 @@ class MessageBubble extends StatelessWidget {
               ),
               child: Text(
                 text,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 15.0,
-                  color: Colors.white,
+                  color: isMe ? Colors.white : Colors.black,
                 ),
               ),
             ),
