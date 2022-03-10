@@ -86,17 +86,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
 
                 final messages = snapshot.data?.docs;
-                List<Text> messageWidgets = [];
+                List<MessageBubble> messageBubbles = [];
                 for (var message in messages!) {
                   final messageText = message.get('text');
                   final messageSender = message.get('sender');
-                  final messageWidget = Text(
-                    '$messageText from $messageSender',
-                    style: const TextStyle(
-                      fontSize: 50.0,
-                    ),
-                  );
-                  messageWidgets.add(messageWidget);
+                  final messageWidget =
+                      MessageBubble(sender: messageSender, text: messageText);
+                  messageBubbles.add(messageWidget);
                 }
 
                 return Expanded(
@@ -105,7 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         horizontal: 10.0,
                         vertical: 20.0,
                       ),
-                      children: messageWidgets),
+                      children: messageBubbles),
                 );
               },
             ),
@@ -140,6 +136,50 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  final String sender;
+  final String text;
+  const MessageBubble({Key? key, required this.sender, required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text(
+            sender,
+            style: const TextStyle(
+              fontSize: 12.0,
+              color: Colors.black54,
+            ),
+          ),
+          Material(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.lightBlueAccent,
+            elevation: 5.0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 20.0,
+              ),
+              child: Text(
+                '$text from $sender',
+                style: const TextStyle(
+                  fontSize: 15.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
