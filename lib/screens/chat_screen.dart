@@ -174,7 +174,11 @@ class MessageBubble extends StatelessWidget {
             ),
           ),
           Material(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30.0),
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(30.0),
+            ),
             color: Colors.lightBlueAccent,
             elevation: 5.0,
             child: Padding(
@@ -183,7 +187,7 @@ class MessageBubble extends StatelessWidget {
                 horizontal: 20.0,
               ),
               child: Text(
-                '$text from $sender',
+                text,
                 style: const TextStyle(
                   fontSize: 15.0,
                   color: Colors.white,
